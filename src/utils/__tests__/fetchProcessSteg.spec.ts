@@ -1,6 +1,12 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { fetchProcessSteg } from "../fetchProcessSteg";
 
+// ensureEnvLoaded försöker ladda runtime-config.js, vilket happy-dom inte tillåter.
+vi.mock("../../config/env", () => ({
+  env: { bffUrl: "" },
+  ensureEnvLoaded: () => Promise.resolve(),
+}));
+
 const aktivitetId = "3f2b8c1e-4d5a-4b6c-9e7f-1a2b3c4d5e6f";
 
 const giltigtSvar = {
