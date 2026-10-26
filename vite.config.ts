@@ -7,11 +7,10 @@ import vueDevTools from "vite-plugin-vue-devtools";
 export default defineConfig({
   plugins: [
     federation({
-      name: "remoteExample",
+      name: "processVahApp",
       filename: "remoteEntry.js",
       exposes: {
-        "./ExampleComponent": "./src/components/ExampleComponent.vue",
-        "./StegIndikatorTest": "./src/components/StegIndikatorTest.vue",
+        "./ProcessVy": "./src/components/ProcessVy.vue",
       },
       shared: {
         vue: { singleton: true, requiredVersion: "^3.5.24" },
@@ -31,7 +30,7 @@ export default defineConfig({
     },
   },
   preview: {
-    port: process.env.VITE_APP_PORT ? parseInt(process.env.VITE_APP_PORT) : 3039,
+    port: process.env.VITE_APP_PORT ? parseInt(process.env.VITE_APP_PORT) : 3041,
     cors: true,
     headers: {
       "Access-Control-Allow-Origin": "*",
@@ -40,13 +39,13 @@ export default defineConfig({
   server: {
     proxy: {
       "/api": {
-        target: "http://localhost:9009",
+        target: "http://localhost:9005",
         changeOrigin: true,
       },
     },
     port: process.env.VITE_APP_PORT_DEV
       ? parseInt(process.env.VITE_APP_PORT_DEV)
-      : 3038,
+      : 3040,
     cors: true,
     headers: {
       "Access-Control-Allow-Origin": "*",
