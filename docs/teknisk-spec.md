@@ -1,45 +1,68 @@
-# Teknisk spec — Mikrofrontend-mall (TMFE)
+# Teknisk spec — Mikrofrontend för VAH:s processvy (PVAHFE)
 
 ## Översikt
 
-Vue 3 + TypeScript-mall för en module federations-mikrofrontend, med Pinia för tillstånd och
-Vitest för testning. Ingen egen routing, ingen databas, ingen meddelandeintegration. Avsedd att
-kopieras, inte driftsättas som den är.
+Vue 3 + TypeScript-mikrofrontend som portalen laddar via module federation. Den hämtar
+processens steg från `rimfrost-process-vah-bff` och visar dem i stegindikatorn. Ingen egen
+routing, inget eget tillstånd utöver komponentens, ingen databas och ingen meddelandeintegration.
+Repot är skapat från `rimfrost-template-micro-fe`.
 
 ## Komponentstruktur
 
 ```text
 src/
-├── App.vue                  # Fristående dev-skal som simulerar portalens layout
+├── App.vue                    # Fristående dev-skal som simulerar portalens layout
 ├── components/
-│   ├── ExampleComponent.vue   # Exponerad exempelkomponent
-│   ├── StegIndikator/         # Responsiv stegindikator, används i ExampleComponent
-│   └── StegIndikatorTest.vue  # Exponerad testyta för stegindikatorn
-├── stores/ExampleStore.ts     # Pinia-exempel
-├── utils/                     # Exempel på fetch mot BFF, med felhantering
-└── config/env.ts               # Enhetlig läsning av bygg-/körtidskonfiguration
+│   ├── ProcessVy.vue          # Exponerad komponent: hämtar och visar processens steg
+│   └── StegIndikator/         # Responsiv stegindikator (från mallen)
+├── utils/
+│   ├── fetchProcessSteg.ts    # Anrop mot BFF:en, felhantering
+│   └── processSteg.ts         # Svarstyper, validering och översättning till StegIndikatorn
+└── config/env.ts              # Enhetlig läsning av bygg-/körtidskonfiguration
 ```
+
+## Module federation
+
+| Egenskap | Värde |
+|---|---|
+| Scope | `processVahApp` |
+| Exponerad modul | `./ProcessVy` |
+| Props | `handlaggningId?: string \| null`, `aktivitetId?: string \| null` |
+| Delade singletons | `vue`, `@fkui/vue`, `pinia` |
 
 ## API-specifikationer
 
-Illustrativa exempelanrop, ingen riktig specifikation:
-
 | Metod | Sökväg | Beskrivning |
 |---|---|---|
-| POST | `/api/task` | Exempel: hämta uppgiftsdata |
-| GET | `/api/uppgiftsbeskrivning` | Exempel: hämta hjälptext |
+| GET | `/api/steg?aktivitetId={uuid}` | Processens steg. `404` betyder att aktiviteten är okänd |
+
+## Visningslogik
+
+| Läge | Visning |
+|---|---|
+| `aktivitetId` saknas | Inget anrop, processvyn döljs |
+| Hämtning pågår | Inget visas |
+| `200` med steg | Stegindikatorn, med steget som har status `PAGAR` markerat |
+| `200` utan steg | Processvyn döljs |
+| `404` (okänd aktivitet) | Processvyn döljs |
+| Övriga fel (felstatus, nätverksfel, oväntat svar) | Neutralt meddelande: "Processens steg kan inte visas just nu." |
+
+Saknas ett steg med status `PAGAR` markeras första steget som inte är `KLAR`. Är alla steg
+klara markeras inget steg som pågående. När `aktivitetId` ändras avbryts en pågående hämtning
+och svaret från den ignoreras.
 
 ## Kafka-integration
 
-Ingen. Mallen ger inget exempel på meddelandeintegration.
+Ingen.
 
 ## Konfiguration
 
 | Egenskap | Beskrivning | Standardvärde |
 |---|---|---|
-| `VITE_BFF_URL` | BFF-url vid lokal utveckling | `http://localhost:9009` |
-| `RUNTIME_BFF_URL` (`window.__TEMPLATE_MICRO_FE_ENV__`) | BFF-url vid körning i container | — |
+| `VITE_BFF_URL` | BFF-url vid lokal utveckling | `http://localhost:9005` |
+| `RUNTIME_BFF_URL` (`window.__PROCESS_VAH_FE_ENV__`) | BFF-url vid körning i container | — |
 | `VITE_DEV_HANDLAGGNING_ID` | Fallback-id vid fristående utvecklingsläge | — |
+| `VITE_DEV_AKTIVITET_ID` | Fallback-aktivitets-ID vid fristående utvecklingsläge | — |
 
 ## Liveness
 
@@ -49,7 +72,6 @@ Ingen egen hälsokontroll — statisk frontend, hälsa avgörs av webbservern so
 
 | Begränsning | Föreslagen åtgärd |
 |---|---|
-| README saknar dokumentation av `src/types.ts`, som inte finns i mallen | Uppdatera README eller lägg till filen |
-| `vue-router` är ett beroende men används inte i mallen | Ta bort beroendet eller lägg till ett minimalt routingexempel |
-| Exempel på integrationsanrop är inte kopplade till exempelkomponenten | Koppla in dem eller förtydliga att de är fristående mönsterexempel |
-| Ingen licensinformation ifylld | Fyll i innan mallen används som grund för nya repon |
+| Anropet till BFF:en skickar ingen `Authorization`-header, på samma sätt som reglernas mikrofrontends | Skicka med handläggarens token när portalen erbjuder det till mikrofrontends |
+| `handlaggningId` tas emot men används inte | Använd när processvyn behöver ärendespecifik information |
+| `vue-router` är ett beroende men används inte (ärvt från mallen) | Ta bort beroendet |
