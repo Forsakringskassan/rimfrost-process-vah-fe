@@ -28,7 +28,7 @@ src/
 | Scope | `processVahApp` |
 | Exponerad modul | `./ProcessVy` |
 | Props | `handlaggningId?: string \| null`, `aktivitetId?: string \| null` |
-| Delade singletons | `vue`, `@fkui/vue`, `pinia` |
+| Delade singletons | `vue`, `@fkui/vue` |
 
 ## API-specifikationer
 

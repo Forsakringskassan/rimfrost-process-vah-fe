@@ -98,7 +98,7 @@ describe("ProcessVy", () => {
   );
 
   it("döljs när processen saknar steg", async () => {
-    fetchMock.mockResolvedValue({ typ: "ok", data: { ...ok.data, steg: [] } } as HamtaStegResultat);
+    fetchMock.mockResolvedValue({ typ: "ok", data: { ...ok.data, steg: [] } });
 
     const wrapper = mountVy();
     await flushPromises();

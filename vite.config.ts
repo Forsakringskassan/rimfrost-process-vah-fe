@@ -15,7 +15,6 @@ export default defineConfig({
       shared: {
         vue: { singleton: true, requiredVersion: "^3.5.24" },
         "@fkui/vue": { singleton: true, requiredVersion: "^6.26.0" },
-        pinia: { singleton: true, requiredVersion: "^3.0.4" },
       },
       manifest: true,
       publicPath: "auto",

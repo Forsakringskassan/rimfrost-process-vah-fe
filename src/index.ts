@@ -1,6 +1,5 @@
 import type { App } from "vue";
 import { ValidationPlugin } from "@fkui/vue";
-import { createPinia } from "pinia";
 import { createApp } from "vue";
 import AppComponent from "./App.vue";
 import "./style.css";
@@ -20,7 +19,6 @@ export function init(mount: string | Element, params?: { handlaggningId?: string
         aktivitetId: params?.aktivitetId ?? null,
     });
     app.use(ValidationPlugin);
-    app.use(createPinia());
     app.mount(container);
     return app;
 }
