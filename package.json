@@ -1,19 +1,13 @@
 {
-  "name": "rimfrost-template-micro-fe",
+  "name": "rimfrost-process-vah-fe",
   "private": true,
-  "version": "1.0.1",
+  "version": "0.0.1",
   "type": "module",
-  "exports": {
-    ".": {
-      "import": "./dist/exampleComponent.js",
-      "style": "./dist/assets/exampleComponent.css"
-    }
-  },
   "scripts": {
-    "dev": "vite --port 3038 --strictPort",
+    "dev": "vite --port 3040 --strictPort",
     "build": "vue-tsc -b && vite build",
-    "preview": "vue-tsc -b && vite build && vite preview --port 3039 --strictPort",
-    "serve": "vite preview --port 3039 --strictPort",
+    "preview": "vue-tsc -b && vite build && vite preview --port 3041 --strictPort",
+    "serve": "vite preview --port 3041 --strictPort",
     "test": "vitest",
     "test:coverage": "vitest run --coverage"
   },
@@ -24,7 +18,6 @@
     "@fkui/theme-default": "^6.26.0",
     "@fkui/user-lib-design": "^1.2.0",
     "@fkui/vue": "^6.26.0",
-    "pinia": "^3.0.4",
     "vue": "^3.5.24",
     "vue-router": "^4.6.3"
   },

@@ -1,13 +1,15 @@
 <script setup lang="ts">
-import ExampleComponent from './components/ExampleComponent.vue';
+import ProcessVy from './components/ProcessVy.vue';
 import { FLayoutApplicationTemplate, FLayoutLeftPanel, FPageHeader } from '@fkui/vue';
 
 const props = defineProps<{
-    handlaggningId: string;
+    handlaggningId?: string | null;
+    aktivitetId?: string | null;
 }>();
 
 const isDev = import.meta.env.DEV;
-const handlaggningId = props.handlaggningId || import.meta.env.VITE_DEV_HANDLAGGNING_ID || 'Ingen handläggnings-ID angiven';
+const handlaggningId = props.handlaggningId || import.meta.env.VITE_DEV_HANDLAGGNING_ID || null;
+const aktivitetId = props.aktivitetId || import.meta.env.VITE_DEV_AKTIVITET_ID || null;
 </script>
 
 <template>
@@ -16,10 +18,10 @@ const handlaggningId = props.handlaggningId || import.meta.env.VITE_DEV_HANDLAGG
             <f-page-header />
         </template>
         <f-layout-left-panel>
-            <ExampleComponent :handlaggningId="handlaggningId" />
+            <ProcessVy :handlaggningId="handlaggningId" :aktivitetId="aktivitetId" />
         </f-layout-left-panel>
     </f-layout-application-template>
-    <ExampleComponent v-else :handlaggningId="handlaggningId" />
+    <ProcessVy v-else :handlaggningId="handlaggningId" :aktivitetId="aktivitetId" />
 </template>
 
 <style scoped></style>

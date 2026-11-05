@@ -1,1 +1,1 @@
-window.__TEMPLATE_MICRO_FE_ENV__ = {};
+window.__PROCESS_VAH_FE_ENV__ = {};

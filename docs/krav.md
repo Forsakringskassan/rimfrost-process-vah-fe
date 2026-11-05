@@ -1,9 +1,11 @@
-# Krav — Mikrofrontend-mall (TMFE)
+# Krav — Mikrofrontend för VAH:s processvy (PVAHFE)
 
 ## Bakgrund och syfte
 
-Detta är en mall, inte en driftsatt tjänst. Den ger ett team en färdig utgångspunkt för att
-bygga en ny regel-mikrofrontend i Rimfrost-plattformen: en fungerande module federation-uppsättning, ett exempel på komponent-, tillstånds- och testmönster, samt konfigurationsstruktur för lokal utveckling och containerdrift. Syftet är att nya mikrofrontends ska kunna skapas snabbt och konsekvent, utan att varje team behöver lösa samma infrastrukturfrågor på nytt.
+Handläggaren ska se var i VAH-processen ärendet befinner sig när hen arbetar med en uppgift.
+Processen äger sin processvy och levererar den som en egen mikrofrontend, som portalen laddar
+bredvid uppgiftens mikrofrontend. Mikrofrontenden hämtar processens steg via sin BFF
+(`rimfrost-process-vah-bff`) och visar dem i stegindikatorn, med det pågående steget markerat.
 
 ---
 
@@ -11,59 +13,42 @@ bygga en ny regel-mikrofrontend i Rimfrost-plattformen: en fungerande module fed
 
 | Aktör | Roll |
 |---|---|
-| Utvecklingsteam | Klonar/kopierar mallen för att skapa en ny mikrofrontend |
-| Handläggarportalen (värdapplikation) | Kommer att ladda in den färdiga mikrofrontenden som skapas från mallen |
-| Handläggare | Slutanvändare av en färdig mikrofrontend byggd på mallen (inte av mallen själv) |
+| Handläggarportalen (`rimfrost-portal-handlaggare`) | Laddar processvyn via module federation och skickar med `handlaggningId` och `aktivitetId` |
+| `rimfrost-process-vah-bff` | Hämtar processens steg från process-vah |
+| Handläggare | Ser processens steg när en uppgift är öppen i portalen |
 
 ---
 
 ## Funktionella krav
 
-### TMFE-FR-01 — module federation
+### PVAHFE-FR-01 — Inladdning i portalen
 
-- **TMFE-FR-01.1** Mallen ska tillhandahålla en färdig module federation-konfiguration som
-  exponerar en exempelkomponent för inladdning av en värdapplikation.
-- **TMFE-FR-01.2** Mallen ska demonstrera hur en mikrofrontend tar emot uppgiftens
-  identifierare som indata från värdapplikationen.
-- **TMFE-FR-01.3** Mallen ska demonstrera hur en mikrofrontend signalerar att en uppgift är
-  slutförd till värdapplikationen.
+- **PVAHFE-FR-01.1** Mikrofrontenden ska exponera processvyn via module federation för
+  inladdning i portalen.
+- **PVAHFE-FR-01.2** Mikrofrontenden ska ta emot `handlaggningId` och `aktivitetId` från
+  portalen.
 
-### TMFE-FR-02 — Exempelmönster för integration och tillstånd
+### PVAHFE-FR-02 — Processens steg
 
-- **TMFE-FR-02.1** Mallen ska tillhandahålla exempel på hur anrop mot en dedikerad BFF görs och
-  felhanteras.
-- **TMFE-FR-02.2** Mallen ska tillhandahålla ett exempel på tillståndshantering som en ny
-  mikrofrontend kan utgå från.
-- **TMFE-FR-02.3** Mallen ska tillhandahålla ett fristående förhandsgranskningsläge så att en
-  utvecklare kan se sin komponent utan att värdapplikationen körs.
-
-### TMFE-FR-03 — Konfiguration för olika miljöer
-
-- **TMFE-FR-03.1** Mallen ska demonstrera hur konfiguration läses från byggtidsvariabler vid
-  lokal utveckling och från körtidsinjicerad konfiguration i containerdrift, utan att koden i
-  övrigt behöver skilja på dessa fall.
+- **PVAHFE-FR-02.1** Mikrofrontenden ska hämta processens steg från sin BFF och visa dem i
+  StegIndikatorn, med det pågående steget markerat.
+- **PVAHFE-FR-02.2** Om stegen inte kan hämtas, eller om aktivitets-ID:t är okänt, ska
+  processvyn visa ett neutralt meddelande eller döljas, utan att påverka resten av portalen.
 
 ---
 
 ## Icke-funktionella krav
 
-### TMFE-NFR-01 — Testbarhet
+### PVAHFE-NFR-01 — Kvalitet
 
-- **TMFE-NFR-01.1** Mallen ska tillhandahålla ett fungerande exempel på enhetstester för
-  komponenter, tillståndshantering och integrationsanrop, som ett team kan följa för nya
-  mikrofrontends.
+- **PVAHFE-NFR-01.1** Enhetstester för komponenten, hämtningen och felhanteringen, enligt
+  mallens mönster.
 
 ---
 
 ## API-gränssnitt (översikt)
 
-| API | Målgrupp | Specifikationsartefakt |
+| API | Riktning | Beskrivning |
 |---|---|---|
-| Exempel-BFF-anrop | Illustrativt, ingen riktig tjänst | Ingen specifikation — ersätts av den nya mikrofrontendens riktiga BFF-kontrakt |
-
----
-
-## Integration med den mikrofrontend-mall-bff
-
-Mallen är avsedd att parkopplas med motsvarande BFF-mall. En färdig mikrofrontend byggd på
-denna mall ska ersätta exempelanropen med anrop mot sin egen, dedikerade BFF.
+| Module federation: `processVahApp/ProcessVy` | Portal → mikrofrontend | Vue-komponent med props `handlaggningId` och `aktivitetId` |
+| `GET /api/steg?aktivitetId={uuid}` | Mikrofrontend → `rimfrost-process-vah-bff` | Processens steg enligt `GetProcessvyStegResponse` i `rimfrost-framework-process-openapi` |
