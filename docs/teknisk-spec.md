@@ -59,7 +59,7 @@ Ingen.
 
 | Egenskap | Beskrivning | Standardvärde |
 |---|---|---|
-| `VITE_BFF_URL` | BFF-url vid lokal utveckling. Tom i `.env.development`, så att anropen går via Vite-proxyn till `http://localhost:9005` | — |
+| `VITE_BFF_URL` | BFF-url vid lokal utveckling. `http://localhost:9005` i `.env` (bygget som portalen laddar). Tom i `.env.development`, så att `npm run dev` går via Vite-proxyn | — |
 | `RUNTIME_BFF_URL` (`window.__PROCESS_VAH_FE_ENV__`) | BFF-url vid körning i container | — |
 | `VITE_DEV_HANDLAGGNING_ID` | Fallback-id vid fristående utvecklingsläge | — |
 | `VITE_DEV_AKTIVITET_ID` | Fallback-aktivitets-ID vid fristående utvecklingsläge | — |
