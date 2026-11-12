@@ -3,7 +3,9 @@
 Mikrofrontend för VAH:s processvy. Portalen (`rimfrost-portal-handlaggare`) laddar den bredvid
 uppgiftens mikrofrontend när en uppgift är öppen, och den visar var i VAH-processen ärendet
 befinner sig. Stegen hämtas från `rimfrost-process-vah-bff` och visas i stegindikatorn, med det
-pågående steget markerat.
+pågående steget markerat. Ett steg kan ha understeg i upp till två nivåer (fas → delsteg →
+delsteg): fasen visar hur många delsteg som är klara, och delstegen listas i detaljpanelen när
+handläggaren öppnar fasen.
 
 Repot är skapat från `rimfrost-template-micro-fe`. Krav finns i [docs/krav.md](docs/krav.md)
 och teknisk beskrivning i [docs/teknisk-spec.md](docs/teknisk-spec.md).
