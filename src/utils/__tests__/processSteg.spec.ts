@@ -89,6 +89,10 @@ describe("arProcessvySteg", () => {
     expect(arProcessvySteg(svarMed(nod([nod([nod([nod()])])])))).toBe(false);
   });
 
+  it("godtar en tom lista som inga understeg, även på innersta nivån", () => {
+    expect(arProcessvySteg(svarMed(nod([nod([nod([])])])))).toBe(true);
+  });
+
   it("avvisar steg som inte är en lista", () => {
     expect(arProcessvySteg(svarMed(nod({ id: "y" })))).toBe(false);
   });

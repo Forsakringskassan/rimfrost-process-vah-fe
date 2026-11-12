@@ -5,7 +5,8 @@ import { onBeforeUnmount, ref, useId } from "vue";
  * Kort hovringstext för ett reglage. FKUI saknar en sådan: FTooltip är en
  * infoknapp som fäller ut hjälptext. Bubblan följer därför FTooltips utseende
  * (infofärger, 2px ram, liten radie, 20×10 pil) men visas vid hovring och
- * tangentbordsfokus. Esc döljer den (WCAG 1.4.13).
+ * tangentbordsfokus. Esc döljer den. Bubblan går inte att hovra över, så den
+ * uppfyller bara delvis WCAG 1.4.13.
  */
 withDefaults(
   defineProps<{
@@ -35,6 +36,14 @@ function dolj(): void {
   visas.value = false;
 }
 
+/** Esc döljer bara bubblan. Panelen runt omkring stängs först vid nästa Esc. */
+function esc(event: KeyboardEvent): void {
+  if (visas.value) {
+    event.stopPropagation();
+    dolj();
+  }
+}
+
 function fokus(event: FocusEvent): void {
   // Bara synligt fokus: ett musklick ska inte låta bubblan ligga kvar.
   if ((event.target as HTMLElement).matches?.(":focus-visible")) {
@@ -55,7 +64,7 @@ onBeforeUnmount(() => clearTimeout(timer));
     @focusin="fokus"
     @focusout="dolj"
     @click="dolj"
-    @keydown.esc="dolj"
+    @keydown.esc="esc"
   >
     <slot :tooltip-id="tooltipId"></slot>
     <span v-if="text" v-show="visas" :id="tooltipId" role="tooltip" class="steg-tooltip__bubbla">

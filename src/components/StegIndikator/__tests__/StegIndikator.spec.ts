@@ -339,6 +339,44 @@ describe("StegIndikator", () => {
       }
     });
 
+    it("hides a visible understeg tooltip on Escape without closing the panel", async () => {
+      vi.useFakeTimers();
+      try {
+        const nestad: Steg[] = [
+          {
+            id: "b",
+            rubrik: "Bedömning",
+            understeg: [
+              {
+                id: "m",
+                rubrik: "Manuell kontroll",
+                status: "kommande",
+                understeg: [{ id: "m1", rubrik: "Bedöm", status: "kommande" }],
+              },
+            ],
+          },
+        ];
+        const wrapper = mountIndikator({ steg: nestad, aktivtSteg: 0 });
+        await wrapper.findAll("li .steg-indikator__knapp")[0].trigger("click");
+        const tooltip = wrapper.find(".understeg__tooltip");
+        const knapp = wrapper.find(".understeg__knapp");
+
+        await tooltip.trigger("mouseenter");
+        vi.advanceTimersByTime(300);
+        await nextTick();
+        await knapp.trigger("keydown.esc");
+
+        const bubbla = tooltip.find("[role='tooltip']").element as HTMLElement;
+        expect(bubbla.style.display).toBe("none");
+        expect(wrapper.find(".steg-detaljer").exists()).toBe(true);
+
+        await knapp.trigger("keydown.esc");
+        expect(wrapper.find(".steg-detaljer").exists()).toBe(false);
+      } finally {
+        vi.useRealTimers();
+      }
+    });
+
     it("keeps a flat process as before: no progress text, fill or tooltips", () => {
       const wrapper = mountIndikator();
 

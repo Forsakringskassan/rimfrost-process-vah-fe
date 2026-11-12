@@ -41,9 +41,10 @@ function arProcessSteg(varde: unknown, nivaerKvar = MAX_UNDERSTEGSNIVAER): varde
     typeof steg.status === "string" &&
     giltigaStatusar.includes(steg.status) &&
     (steg.steg === undefined ||
-      (nivaerKvar > 0 &&
-        Array.isArray(steg.steg) &&
-        steg.steg.every((u) => arProcessSteg(u, nivaerKvar - 1))))
+      // En tom lista betyder inga understeg, på alla nivåer.
+      (Array.isArray(steg.steg) &&
+        (steg.steg.length === 0 ||
+          (nivaerKvar > 0 && steg.steg.every((u) => arProcessSteg(u, nivaerKvar - 1))))))
   );
 }
 

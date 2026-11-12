@@ -35,6 +35,7 @@ defineEmits<{ stang: [] }>();
       v-if="pil !== 'ingen'"
       class="steg-detaljer__chevronplats"
       :text="stangText"
+      aria-hidden="true"
     >
       <button
         type="button"

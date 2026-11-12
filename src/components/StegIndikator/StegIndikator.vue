@@ -290,6 +290,7 @@ watch(
     <div
       v-if="valt && layout === 'horisontell'"
       class="steg-indikator__chevronrad"
+      aria-hidden="true"
     >
       <StegTooltip
         :key="valt.index"
@@ -400,7 +401,12 @@ watch(
   height: var(--cirkel);
   border-radius: 50%;
   font-weight: 600;
-  transition: box-shadow 0.15s ease;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .steg-indikator__cirkel {
+    transition: box-shadow 0.15s ease;
+  }
 }
 
 .steg-indikator__steg--klar .steg-indikator__cirkel {
